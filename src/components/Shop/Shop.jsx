@@ -32,10 +32,10 @@ const Shop = () => {
     */
 
     useEffect(() => {
-        fetch('http://localhost:5000/products')
+        fetch(`http://localhost:5000/products?page=${currentPage}&size=${itemsPerPage}`)
             .then(res => res.json())
             .then(data => setProducts(data))
-    }, []);
+    }, [currentPage, itemsPerPage]);
 
     useEffect(() => {
         const storedCart = getShoppingCart();
@@ -86,9 +86,21 @@ const Shop = () => {
     const handleItemsPerPage = e => {
         const val = parseInt(e.target.value);
         console.log(val);
-        setitemsPerPage(val)
+        setitemsPerPage(val);
+        setCurrentPage(0);
+
+    }
+    const handlePreviousPage = () => {
+        if (currentPage > 0) {
+            setCurrentPage(currentPage - 1);
+        }
     }
 
+    const handleNextPage = () => {
+        if (currentPage < pages.length - 1) {
+            setCurrentPage(currentPage + 1);
+        }
+    }
     return (
         <div className='shop-container'>
             <div className="products-container">
@@ -112,12 +124,14 @@ const Shop = () => {
             </div>
             <div className='pagination'>
                 <p>Current page: {currentPage} </p>
+                <button onClick={handlePreviousPage}>Prev</button>
                 {
                     pages.map(page => <button
                         className={currentPage === page && 'selected'}
                         onClick={() => setCurrentPage(page)}
                         key={page}>{page}</button>)
                 }
+                <button onClick={handleNextPage}>Next</button>
                 <select value={itemsPerPage} onChange={handleItemsPerPage} name='' id=''>
                     <option value="5">5</option>
                     <option value="10">10</option>
